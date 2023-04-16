@@ -1,0 +1,39 @@
+
+
+component provides learning.MultiArmedBanditLearning requires util.Math math{
+    int numberOfIterations = 0
+    int numberOfTimesChosen[]
+    dec sumOfRewards[]
+
+    dec confidenceLevel(int action) {
+        return (sumOfRewards[action] / numberOfTimesChosen[action]) +  math.sqrt((2 * math.natlog(numberOfIterations)) / (1 + numberOfTimesChosen[action]))
+    }
+
+    void UCB(int n) {
+        numberOfTimesChosen = new int[n]
+        sumOfRewards = new dec[n]
+        return
+    }
+
+    int MultiArmedBanditLearning:chooseCompositionIndex() {
+        int maxIndex = 0
+        dec maxValue = 0
+        for (int i = 0; i < numberOfTimesChosen.arrayLength; i++) {
+            if (numberOfTimesChosen[i] == 0) {
+                return i
+            }
+            dec confidence = confidenceLevel(i)
+            if (confidence > maxValue) {
+                maxValue = confidence
+                maxIndex = i
+            }
+        }
+        return maxIndex
+    }
+
+    void MultiArmedBanditLearning:update(int action, dec reward) {
+        numberOfIterations = numberOfIterations + 1
+        sumOfRewards[action] = sumOfRewards[action] + reward
+        numberOfTimesChosen[action] = numberOfTimesChosen[action] + 1
+    }
+}

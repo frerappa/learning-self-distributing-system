@@ -1,0 +1,6 @@
+interface MultiArmedBanditLearning {
+    int chooseCompositionIndex()
+
+    void update(int action, dec reward)
+    
+}

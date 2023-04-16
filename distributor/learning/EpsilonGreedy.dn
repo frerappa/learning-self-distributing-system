@@ -1,0 +1,49 @@
+
+
+component provides learning.MultiArmedBanditLearning requires util.Math math, util.Random random{
+    dec epsilon
+    int N
+    int numberOfIterations = 0
+    int numberOfTimesChosen[]
+    dec sumOfRewards[]
+
+    dec confidenceLevel(int action) {
+        return (sumOfRewards[action] / numberOfTimesChosen[action]) +  math.sqrt((2 * math.natlog(numberOfIterations)) / (1 + numberOfTimesChosen[action]))
+    }
+
+    void EpsilonGreedy(dec eps, int n) {
+        random.setSeed(1010)
+        epsilon = eps
+        N = n
+        numberOfTimesChosen = new int[n]
+        sumOfRewards = new dec[n]
+        return
+    }
+
+    int MultiArmedBanditLearning:chooseCompositionIndex() {
+        if (random.getDec(0.0, 1.0) > epsilon) {
+            int maxIndex = 0
+            dec maxValue = 0
+            for (int i = 0; i < N; i++) {
+                if (numberOfTimesChosen[i] == 0) {
+                    return i
+                }
+                dec confidence = sumOfRewards[i] / numberOfTimesChosen[i]
+                if (confidence > maxValue) {
+                    maxValue = confidence
+                    maxIndex = i
+                }
+            }
+            return maxIndex
+        }
+        else {
+            return random.getInt(N)
+        }
+    }
+
+    void MultiArmedBanditLearning:update(int action, dec reward) {
+        numberOfIterations = numberOfIterations + 1
+        sumOfRewards[action] = sumOfRewards[action] + reward
+        numberOfTimesChosen[action] = numberOfTimesChosen[action] + 1
+    }
+}
