@@ -1,6 +1,6 @@
 
 component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocket, 
-	http.HTTPUtil httpUtil, server.Server server {
+	http.HTTPUtil httpUtil, server.Server server, distributor.LearningDistributor {
 
 	// processing incoming requests and handing them over to Server
 	void handleRequest(TCPSocket client) {
@@ -23,12 +23,24 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 
 		out.println("Server is up and running...")
 
+		LearningDistributor distributor = new LearningDistributor()
+		distributor.setupLearning()
+
 		// handling incoming requests
 		while (true) {
 			TCPSocket client = new TCPSocket()
 			if (client.accept(host)) {
 				out.println("Request is being handle")
+
+				int chosenConfig = distributor.distributeByLearning()
+
+				// todo collect response time
+
+
 				asynch::handleRequest(client)
+
+				distributor.updateReward(chosenConfig, 1.0) // todo change reward
+
 			}
 			out.println("...")
 

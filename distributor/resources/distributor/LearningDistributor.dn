@@ -1,0 +1,10 @@
+
+interface LearningDistributor {
+	LearningDistributor:LearningDistributor()
+
+	void LearningDistributor:setupLearning() 
+	int LearningDistributor:distributeByLearning()
+
+	void LearningDistributor:updateReward(int config, dec responseTime) 
+}
+

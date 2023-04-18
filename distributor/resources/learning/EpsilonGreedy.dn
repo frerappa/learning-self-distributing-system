@@ -1,0 +1,3 @@
+interface EpsilonGreedy extends MultiArmedBanditLearning {
+    EpsilonGreedy(dec eps, int n)    
+}

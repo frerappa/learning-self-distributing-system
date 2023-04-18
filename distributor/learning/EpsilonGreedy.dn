@@ -1,6 +1,4 @@
-
-
-component provides learning.MultiArmedBanditLearning requires util.Math math, util.Random random{
+component provides learning.EpsilonGreedy requires util.Math math, util.Random random{
     dec epsilon
     int N
     int numberOfIterations = 0
@@ -11,16 +9,15 @@ component provides learning.MultiArmedBanditLearning requires util.Math math, ut
         return (sumOfRewards[action] / numberOfTimesChosen[action]) +  math.sqrt((2 * math.natlog(numberOfIterations)) / (1 + numberOfTimesChosen[action]))
     }
 
-    void EpsilonGreedy(dec eps, int n) {
+    EpsilonGreedy:EpsilonGreedy(dec eps, int n) {
         random.setSeed(1010)
         epsilon = eps
         N = n
         numberOfTimesChosen = new int[n]
         sumOfRewards = new dec[n]
-        return
     }
 
-    int MultiArmedBanditLearning:chooseCompositionIndex() {
+    int EpsilonGreedy:chooseCompositionIndex() {
         if (random.getDec(0.0, 1.0) > epsilon) {
             int maxIndex = 0
             dec maxValue = 0
@@ -41,7 +38,7 @@ component provides learning.MultiArmedBanditLearning requires util.Math math, ut
         }
     }
 
-    void MultiArmedBanditLearning:update(int action, dec reward) {
+    void EpsilonGreedy:update(int action, dec reward) {
         numberOfIterations = numberOfIterations + 1
         sumOfRewards[action] = sumOfRewards[action] + reward
         numberOfTimesChosen[action] = numberOfTimesChosen[action] + 1

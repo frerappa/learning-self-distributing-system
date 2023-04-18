@@ -1,0 +1,5 @@
+{
+defaultLinks:	[
+				{interface: "MultiArmedBanditLearning", component: "UCB"}
+				]
+}
