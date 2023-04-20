@@ -64,11 +64,8 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 
 
 
-		// ! 
 		out.println("$(debugMSG) Adding proxy to configs.")
 		if (availableProxies.arrayLength > 0) { assembly.addComp(availableProxies) }
-		out.println("~~~~~~")
-		// !
 
 		out.println("$(debugMSG) Perception fully configured.")
 	}

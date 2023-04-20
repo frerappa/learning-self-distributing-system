@@ -8,6 +8,7 @@ const char LOCAL[]      = "local"
 component provides distributor.LearningDistributor requires io.Output out, data.StringUtil strUtil, data.IntUtil iu, io.Input in, 
 	monitoring.Perception, data.json.JSONEncoder encoder, data.DecUtil du, time.Timer t, learning.UCB{
 
+	int currentConfigIndex = 0
 	String remoteConfigs[] 		= null
 	String localConfigs[] 		= null
 	String distributedProxies[] = null
@@ -21,8 +22,8 @@ component provides distributor.LearningDistributor requires io.Output out, data.
 
 		// todo
 
-		perception.setMain("../../server/main.o", null)
-		perception.addProxy("|../../distributor/monitoring/proxies/ServerProxy.o|*(*:server.Server[0]:*)|")
+		perception.setMain("../server/main.o", null)
+		perception.addProxy("|../distributor/monitoring/proxies/ServerProxy.o|*(*:server.Server[0]:*)|")
 		String configs[] = perception.getAllConfigs()
 		for (int i = 0; i < configs.arrayLength; i++) {
 			out.println("$(debugMSG) $(iu.intToString(i+1)): $(configs[i].string)")
@@ -46,7 +47,7 @@ component provides distributor.LearningDistributor requires io.Output out, data.
 	}
 
 	void distribute(char proxyInterface[]) {
-		out.println(proxyInterface)
+		// out.println(proxyInterface)
 
 		char remoteConfig[] = getRemoteConfig("data/adt/$(proxyInterface)")
 		if (remoteConfig != null) {	
@@ -126,9 +127,11 @@ component provides distributor.LearningDistributor requires io.Output out, data.
 	int LearningDistributor:distributeByLearning() {
 		String configs[] = getConfigs()
 		int index = learning.chooseCompositionIndex()
-		String chosenConfig = configs[index]
-		commandInterpret(chosenConfig.string)
-
+		if (currentConfigIndex != index) {
+			String chosenConfig = configs[index]
+			commandInterpret(chosenConfig.string)
+		}
+		currentConfigIndex = index
 		return index
 	}
 
