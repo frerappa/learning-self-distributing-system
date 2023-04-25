@@ -1,5 +1,5 @@
 
-component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocket, 
+component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
 	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
 	data.IntUtil iu, distributor.LearningDistributor {
 
@@ -10,6 +10,9 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 	}
 
 	int App:main(AppParam params[]) {
+		bool shouldAutoScale = params.arrayLength > 0 && params[0].string == "manual"
+		bool shouldSaveToFile = params.arrayLength > 1 && params[1].string == "save"
+
 		// instantiating variables
 		TCPServerSocket host = new TCPServerSocket()
 		int server_port = 8080
@@ -22,6 +25,9 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			return 1
 		}
 
+		File f = new File("../data/out.txt", File.FILE_ACCESS_WRITE)
+
+
 		out.println("Server is up and running...")
 
 		LearningDistributor distributor = new LearningDistributor()
@@ -33,34 +39,42 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			if (client.accept(host)) {
 				out.println("Request is being handle")
 
-				int chosenConfig = distributor.distributeByLearning()
+				if (shouldAutoScale) {
 
-				// todo collect response time
-
-				DateTime dt1 = null
-				DateTime dt2 = null
-				dt1 = ic.getTime()
+					int chosenConfig = distributor.distributeByLearning()
 
 
-				handleRequest(client)
+					DateTime dt1 = null
+					DateTime dt2 = null
+					dt1 = ic.getTime()
 
 
-				
-				dt2 = ic.getTime()
-				int responseTime = 10
-				if ((dt1 != null) && (dt2 != null)) {
-					 responseTime = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2)) 
+					handleRequest(client)
+
+
+					
+					dt2 = ic.getTime()
+					int responseTime = 10
+					if ((dt1 != null) && (dt2 != null)) {
+						responseTime = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2)) 
+					}
+
+					// out.println("RT: $(iu.intToString(responseTime)) ms")
+					f.write("$(iu.intToString(responseTime))\n")
+
+					dec reward = 100 / responseTime // todo change
+
+					distributor.updateReward(chosenConfig, reward) // todo change reward
+				}
+				else {
+					handleRequest(client)
 				}
 
-				out.println("RT: $(iu.intToString(responseTime)) ms")
-				dec reward = 100 / responseTime // todo change
-
-				distributor.updateReward(chosenConfig, reward) // todo change reward
 
 			}
-			out.println("...")
-
 		}
+
+		f.close()
 
 		return 0
 	}

@@ -1,0 +1,3 @@
+interface LinUCB extends MultiArmedBanditLearning {
+    LinUCB(int n)   
+}
