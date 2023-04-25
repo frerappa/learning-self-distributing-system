@@ -1,13 +1,8 @@
 component provides learning.EpsilonGreedy requires util.Math math, util.Random random{
     dec epsilon
     int N
-    int numberOfIterations = 0
     int numberOfTimesChosen[]
     dec sumOfRewards[]
-
-    dec confidenceLevel(int action) {
-        return (sumOfRewards[action] / numberOfTimesChosen[action]) +  math.sqrt((2 * math.natlog(numberOfIterations)) / (1 + numberOfTimesChosen[action]))
-    }
 
     EpsilonGreedy:EpsilonGreedy(dec eps, int n) {
         random.setSeed(1010)
@@ -39,7 +34,6 @@ component provides learning.EpsilonGreedy requires util.Math math, util.Random r
     }
 
     void EpsilonGreedy:update(int action, dec reward) {
-        numberOfIterations = numberOfIterations + 1
         sumOfRewards[action] = sumOfRewards[action] + reward
         numberOfTimesChosen[action] = numberOfTimesChosen[action] + 1
     }

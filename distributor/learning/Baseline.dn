@@ -1,0 +1,35 @@
+component provides learning.Baseline requires util.Math math, util.Random random{
+    dec epsilon
+    int N
+    int numberOfTimesChosen[]
+    dec sumOfRewards[]
+
+    Baseline:Baseline(dec eps, int n) {
+        random.setSeed(1010)
+        epsilon = eps
+        N = n
+        numberOfTimesChosen = new int[n]
+        sumOfRewards = new dec[n]
+    }
+
+    int Baseline:chooseCompositionIndex() {
+        int maxIndex = 0
+        dec maxValue = 0
+        for (int i = 0; i < N; i++) {
+            if (numberOfTimesChosen[i] == 0) {
+                return i
+            }
+            dec confidence = sumOfRewards[i] / numberOfTimesChosen[i]
+            if (confidence > maxValue) {
+                maxValue = confidence
+                maxIndex = i
+            }
+        }
+        return maxIndex
+    }
+
+    void Baseline:update(int action, dec reward) {
+        sumOfRewards[action] = sumOfRewards[action] + reward
+        numberOfTimesChosen[action] = numberOfTimesChosen[action] + 1
+    }
+}

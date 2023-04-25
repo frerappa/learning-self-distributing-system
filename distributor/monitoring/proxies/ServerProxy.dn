@@ -35,7 +35,6 @@ component provides server.Server, monitoring.BeingMonitored requires io.Output o
 				monitor.turnMonitorOn()
 			}
 			ResponseTime metric = new ResponseTime() // !!!!!
-			out.println("uexpa")
 			metric.start()
 			server.process(msg)
 			metric.finish()

@@ -74,6 +74,7 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			}
 		}
 		// processing command
+		out.println(command)
 		String helper[] = strUtil.explode(command, "!")
 		if (helper[0].string == "../distributor/RemoteList.o") {
 			startRemoteProcess(helper[0].string, helper[1].string)

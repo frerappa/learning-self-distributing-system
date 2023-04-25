@@ -6,14 +6,16 @@ const char SHARDING[]   = "sharding"
 const char LOCAL[]      = "local"
 
 component provides distributor.LearningDistributor requires io.Output out, data.StringUtil strUtil, data.IntUtil iu, io.Input in, 
-	monitoring.Perception, data.json.JSONEncoder encoder, data.DecUtil du, time.Timer t, learning.UCB{
+	monitoring.Perception, data.json.JSONEncoder encoder, data.DecUtil du, time.Timer t, learning.UCB, learning.EpsilonGreedy {
 
 	int currentConfigIndex = 0
 	String remoteConfigs[] 		= null
 	String localConfigs[] 		= null
 	String distributedProxies[] = null
 	Perception perception 		= null
+
 	UCB learning = null
+	// EpsilonGreedy learning = null
 
 	LearningDistributor:LearningDistributor() {
 		perception = new Perception(true)
@@ -129,14 +131,14 @@ component provides distributor.LearningDistributor requires io.Output out, data.
 		int index = learning.chooseCompositionIndex()
 		if (currentConfigIndex != index) {
 			String chosenConfig = configs[index]
+			out.println("ChosenConfig: $(chosenConfig.string)")
 			commandInterpret(chosenConfig.string)
 		}
 		currentConfigIndex = index
 		return index
 	}
 
-	void LearningDistributor:updateReward(int config, dec responseTime) {
-		dec reward = 100 / responseTime
+	void LearningDistributor:updateReward(int config, dec reward) {
 		learning.update(config, reward)
 	}
 }

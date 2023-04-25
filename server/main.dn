@@ -10,7 +10,7 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 	}
 
 	int App:main(AppParam params[]) {
-		bool shouldAutoScale = params.arrayLength > 0 && params[0].string == "manual"
+		bool shouldAutoScale = params.arrayLength == 0 || (params.arrayLength == 1 && params[0].string != "manual")
 		bool shouldSaveToFile = params.arrayLength > 1 && params[1].string == "save"
 
 		// instantiating variables
@@ -25,13 +25,19 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 			return 1
 		}
 
-		File f = new File("../data/out.txt", File.FILE_ACCESS_WRITE)
+		// File f = new File("../data/out.txt", File.FILE_ACCESS_WRITE)
 
 
 		out.println("Server is up and running...")
 
-		LearningDistributor distributor = new LearningDistributor()
+		LearningDistributor distributor = null
+
+		if (shouldAutoScale) {
+
+		distributor = new LearningDistributor()
 		distributor.setupLearning()
+		}
+
 
 		// handling incoming requests
 		while (true) {
@@ -40,8 +46,7 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 				out.println("Request is being handle")
 
 				if (shouldAutoScale) {
-
-					int chosenConfig = distributor.distributeByLearning()
+	int chosenConfig = distributor.distributeByLearning()
 
 
 					DateTime dt1 = null
@@ -60,21 +65,25 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 					}
 
 					// out.println("RT: $(iu.intToString(responseTime)) ms")
-					f.write("$(iu.intToString(responseTime))\n")
+					// f.write("$(iu.intToString(responseTime))\n")
 
-					dec reward = 100 / responseTime // todo change
+					dec reward = - responseTime / 100 // todo change
 
-					distributor.updateReward(chosenConfig, reward) // todo change reward
+					distributor.updateReward(chosenConfig, reward) 
+
 				}
 				else {
+
 					handleRequest(client)
+
+				
 				}
 
 
 			}
 		}
 
-		f.close()
+		// f.close()
 
 		return 0
 	}
