@@ -34,7 +34,7 @@ component provides server.Server, monitoring.BeingMonitored requires io.Output o
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
-			ResponseTime metric = new ResponseTime() // !!!!!
+			ResponseTime metric = new ResponseTime()
 			metric.start()
 			server.process(msg)
 			metric.finish()

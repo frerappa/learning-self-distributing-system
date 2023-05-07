@@ -34,8 +34,8 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 
 		if (shouldAutoScale) {
 
-		distributor = new LearningDistributor()
-		distributor.setupLearning()
+			distributor = new LearningDistributor()
+			distributor.setupLearning()
 		}
 
 
@@ -46,7 +46,7 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 				out.println("Request is being handle")
 
 				if (shouldAutoScale) {
-	int chosenConfig = distributor.distributeByLearning()
+					int chosenConfig = distributor.distributeByLearning()
 
 
 					DateTime dt1 = null
@@ -67,16 +67,13 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 					// out.println("RT: $(iu.intToString(responseTime)) ms")
 					// f.write("$(iu.intToString(responseTime))\n")
 
-					dec reward = - responseTime / 100 // todo change
+					dec reward = 100 / responseTime // todo change
 
 					distributor.updateReward(chosenConfig, reward) 
 
 				}
 				else {
-
 					handleRequest(client)
-
-				
 				}
 
 

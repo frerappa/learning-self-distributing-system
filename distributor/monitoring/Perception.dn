@@ -61,12 +61,8 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 	void Perception:setMain(char path[], AppParam args[]) {
 		assembly.setMain(path, args)
 		cleanConfigs = assembly.getAllConfigs()
-
-
-
-		out.println("$(debugMSG) Adding proxy to configs.")
-		if (availableProxies.arrayLength > 0) { assembly.addComp(availableProxies) }
-
+		/*out.println("$(debugMSG) Adding proxy to configs.")
+		if (availableProxies.arrayLength > 0) { assembly.addComp(availableProxies) }*/
 		out.println("$(debugMSG) Perception fully configured.")
 	}
 
@@ -206,18 +202,8 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 
 	// following json formatting
 	char[] Perception:getPerceptionData() {
-		
-
 		mutex(perceptionLock) {
 			IDCReference components[] = assembly.getComponents(availableProxies)
-			String p = availableProxies[0]
-			out.println("-> $(components.arrayLength) <-")
-			for (int pPointer = 0; pPointer < availableProxies.arrayLength; pPointer++) {
-				char arr[] = availableProxies[pPointer].string
-				out.println(">>>>>>>>>>>>>>> $(debugMSG) $(arr)")
-
-			}
-
 			/* turn proxy off */
 			for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
 				if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {

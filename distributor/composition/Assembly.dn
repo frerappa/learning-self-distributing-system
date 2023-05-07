@@ -274,13 +274,10 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 
 	// NOTE: Expanded this to add more info about the components (the name of the components that requires them
 	// and the components that they require)
-	IDCReference[] Assembly:getComponents(String paths[]) {		
+	IDCReference[] Assembly:getComponents(String paths[]) {
 		IDCReference refs[] = null
 		for (int compPointer = 0; compPointer < configs[currentConfig].components.arrayLength; compPointer++) {
 			for (int compPointer2 = 0; compPointer2 < paths.arrayLength; compPointer2++) {
-				// ! não encontra igualdade no if
-				out.println("$(configs[currentConfig].components[compPointer].name) == $(paths[compPointer2].string)" )
-
 				if (configs[currentConfig].components[compPointer].name == paths[compPointer2].string) {
 					// if component is proxy, it returns the name of the component the proxy is monitoring
 					// E.g. HTTPGET or HTTPCH, etc. instead of HTTPProxy

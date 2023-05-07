@@ -1,12 +1,11 @@
 component provides learning.Baseline requires util.Math math, util.Random random{
-    dec epsilon
     int N
     int numberOfTimesChosen[]
     dec sumOfRewards[]
 
-    Baseline:Baseline(dec eps, int n) {
+    Baseline:Baseline(int n) {
         random.setSeed(1010)
-        epsilon = eps
+
         N = n
         numberOfTimesChosen = new int[n]
         sumOfRewards = new dec[n]
