@@ -34,7 +34,7 @@ component provides http.HTTPUtil requires io.Output out, data.IntUtil iu, io.Fil
 	}
 
 	HTTPMessage HTTPUtil:getMessage(HTTPMessage header) {
-		out.println(header.contentLength)
+		// out.println(header.contentLength)
 		HTTPMessage message = new HTTPMessage()
 		message.command = header.command
 		message.resource = header.resource
@@ -70,7 +70,7 @@ component provides http.HTTPUtil requires io.Output out, data.IntUtil iu, io.Fil
 			message.postData = new char[](header.socket.recv(header.contentLength))
 		}
 
-		out.println("Message is being parsed")
+		// out.println("Message is being parsed")
 
 
 		return message

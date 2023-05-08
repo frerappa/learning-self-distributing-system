@@ -89,7 +89,9 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 
 	void Perception:setConfig(char config[]) {
 		mutex(perceptionLock) {
-			if (rule == null) {	assembly.setConfig(config) }
+			if (rule == null) {
+					assembly.setConfig(config) 
+				}
 			else {
 				int configPointer = 0
 				if ((configPointer = reducedVerifier(config)) != INT_MAX) {
@@ -107,7 +109,9 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 					}
 				} else {
 					//out.println("$(debugMSG) config $(config)")
-					if (assembly.setConfig(config)) { setCurrentProxyConfigToFalse() }
+					if (assembly.setConfig(config)) { 
+						setCurrentProxyConfigToFalse() 
+					}
 					else {
 						out.println("$(debugMSG) Something went wrong, adaptation was not completed.")
 						return

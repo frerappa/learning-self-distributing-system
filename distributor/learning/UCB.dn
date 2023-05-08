@@ -1,4 +1,4 @@
-component provides learning.UCB requires util.Math math{
+component provides learning.UCB requires util.Math math {
     int numberOfIterations = 0
     int numberOfTimesChosen[]
     dec sumOfRewards[]

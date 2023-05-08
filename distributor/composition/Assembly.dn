@@ -392,6 +392,18 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 		return commonComps
 	}
 
+	char[] getInterfaceNameWithSemanticAccountedFor(char alias[], char semantic[]) {
+		char semanticSubstring[] = new char[](":", semantic)
+
+		if (strUtil.endsWith(alias, semanticSubstring)) {
+			return alias
+		}
+		else {
+			return new char[](alias, semanticSubstring)
+		}
+	}
+
+
 	void adaptInterfaces(Component newCommonComps[], Component oldCommonComps[], int configPointer) {
 		for (int commonPointer = 0; commonPointer < newCommonComps.arrayLength; commonPointer++) {
 			if (newCommonComps[commonPointer].name == oldCommonComps[commonPointer].name) {
@@ -401,13 +413,30 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 					Binding oldCommonC = oldCommonComps[commonPointer].iRequire[depCommon]
 					if (configs[configPointer].components[newCommonC.compPointer].name != 
 						configs[currentConfig].components[oldCommonC.compPointer].name) {
+
+						char interfaceName[] = newCommonC.intfAlias
+
 						if (newCommonC.intfSemantic != null) {
-							adapter.adaptRequiredInterface(newCommonComps[commonPointer].class, 
-								new char[](newCommonC.intfAlias, ":", newCommonC.intfSemantic), 
+
+							interfaceName = getInterfaceNameWithSemanticAccountedFor(newCommonC.intfAlias, newCommonC.intfSemantic)
+
+							bool a = adapter.adaptRequiredInterface(newCommonComps[commonPointer].class, 
+								interfaceName, 
 								configs[configPointer].components[newCommonC.compPointer].class)
+
+							// !!!!!!!!!!!
+							// if (a) {
+							// 	out.println("Y")
+							// }
+							// else {
+
+							// 	out.println("N")
+							// }
+
+
 						} else {
 							adapter.adaptRequiredInterface(newCommonComps[commonPointer].class, 
-								newCommonC.intfAlias, 
+								interfaceName, 
 								configs[configPointer].components[newCommonC.compPointer].class)
 						}
 					}
@@ -504,10 +533,13 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 				Component comp2 = configs[configPointer].components[comp.iRequire[compPointer].compPointer]
 				if (comp2.class == null) { comp2.class = loader.load(comp2.name) }
 				char alias[] = null
+				// !!!!!
 				if (comp.iRequire[compPointer].intfSemantic != null) {
-					alias = new char[](comp.iRequire[compPointer].intfAlias, ":", 
-						comp.iRequire[compPointer].intfSemantic)
-				} else { alias = comp.iRequire[compPointer].intfAlias }
+					alias = getInterfaceNameWithSemanticAccountedFor(comp.iRequire[compPointer].intfAlias, comp.iRequire[compPointer].intfSemantic)
+				} 
+				else { 
+					alias = comp.iRequire[compPointer].intfAlias
+				}
 				comp.class.wire(alias, comp2.class, alias)
 				recursiveBinding(comp2, configPointer)
 			}

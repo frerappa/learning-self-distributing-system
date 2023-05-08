@@ -155,6 +155,9 @@ component provides App requires io.Output out, data.StringUtil strUtil, data.Int
 					localConfigs = new String[](localConfigs, configs[confPointer])
 				}
 			}
+
+			out.println("$(debugMSG) $(debugMSG) $(debugMSG) $(debugMSG) $(debugMSG) ")
+
 		}
 	}
 
@@ -171,8 +174,12 @@ component provides App requires io.Output out, data.StringUtil strUtil, data.Int
 
 	int App:main(AppParam params[]) {
 		perception = new Perception(true)
+
 		/* Loading target system and adding a monitoring proxy to it */
-		perception.setMain("../server/main.o", null)
+		params = new AppParam[](new AppParam())
+		// TODO validate if this is really necessary !!!!!! 
+		params[0].string = "manual"
+		perception.setMain("../server/main.o", params)
 		perception.addProxy("|../distributor/monitoring/proxies/ServerProxy.o|*(*:server.Server[0]:*)|")
 		
         String configs[] = perception.getAllConfigs()
