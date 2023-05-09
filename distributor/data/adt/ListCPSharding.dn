@@ -36,7 +36,9 @@ const char CLEAR_LIST[]   = "clearList"
 
 /* IPs */
 const char LOCALHOST[] = "localhost"
-const char IP1[] = "localhost"
+// const char IP1[] = "localhost"
+const char IP1[] = "192.168.0.63"
+// const char IP2[] = "localhost"
 const char IP2[] = "192.168.0.63"
 
 component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEncoder parser,
@@ -127,6 +129,8 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 	}
 
 	void List:add(Data item) {
+		out.println("Adding in shard")  // !!!!
+
 		// build request
 		Request request = new Request()
 		request.functionName = ADD
@@ -252,6 +256,8 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 			for (int i = 0; i < remoteDistsIps.arrayLength; i++) {
 				char state[] = parser.jsonFromArray(shardState[i].state, null)
 				char msg[] = new char[]("../distributor/RemoteList.o!", state, "\r\r\r\r")
+
+				out.println("Making request to $(remoteDistsIps[i].ip) : $(iu.intToString(remoteDistsIps[i].port))")
 				makeRequest(remoteDistsIps[i], msg, true)
 			}
 		}

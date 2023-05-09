@@ -62,6 +62,8 @@ component provides proxy.DistProxy requires io.Output out, data.IntUtil iu, net.
 		response.status = 3
 		response.value = parser.jsonFromArray(result, null)
 
+		out.println("GETCONTENTS $(response.value)")  // !!!!
+
 		return response
 	}
 
@@ -137,6 +139,9 @@ component provides proxy.DistProxy requires io.Output out, data.IntUtil iu, net.
 		} else {
 			content = new char[](parser.jsonFromData(response,null), "\r\r\r\r")
 		}
+
+		out.println("Sendinf to $(s.getRemoteEndpoint().address) : $(iu.intToString(s.getRemoteEndpoint().port))") // !!!!
+
 		s.send(content)
 		s.disconnect()
 	}

@@ -32,7 +32,9 @@ const char CLEAR_LIST[]   = "clearList"
 
 /* IPs */
 const char LOCALHOST[] = "localhost"
-const char IP1[] = "localhost"
+// const char IP1[] = "localhost"
+const char IP1[] = "192.168.0.63"
+// const char IP2[] = "localhost"
 const char IP2[] = "192.168.0.63"
 
 component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEncoder parser,
@@ -155,6 +157,7 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 
 	void List:add(Data item) {
 		//out.println("Estamos aqui!")
+		out.println("Adding in propagate")  // !!!!
 		Request request = new Request()
 		request.functionName = ADD
 		request.numParams = 1

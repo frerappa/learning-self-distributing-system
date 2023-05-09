@@ -18,6 +18,7 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 	bool running 			= false
 
 	void startRemoteProcess(char remoteP[], char state[]) {
+		out.println(">>>>>>>>>>>>>>>>>>>>>Start remote process<<<<<<<<<<<<<")  // !!!!
 		// load and start relocated component
 		if (!running) {
 			AppParam params[] = new AppParam[1]
@@ -32,13 +33,15 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			running = true
 			remote = assembly.getCompsByProvidedInterface("proxy.DistProxy")
 		}
-		if ((remote == null) || (remote.arrayLength > 1)) { throw new Exception("Something went wrong!") }
+		if ((remote == null) || (remote.arrayLength > 1)) { 
+			throw new Exception("Something went wrong!") 
+		}
 		else {
 			// parsing state to Data
 			Int content[] = encoder.jsonToArray(state, typeof(Int[]), null)
 			// adding content to list in the object
 			Object objects[] = remote[0].class.getObjects("data.adt.List:heap")
-			List list = objects[0]
+			List list = objects[0] // why is it 0
 			for (int i = 0; i < content.arrayLength; i++) {
 				list.add(content[i])
 			}

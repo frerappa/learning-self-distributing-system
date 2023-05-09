@@ -32,7 +32,9 @@ const char CLEAR_LIST[]   = "clearList"
 
 /* IPs */
 const char LOCALHOST[] = "localhost"
-const char IP1[] = "localhost"
+// const char IP1[] = "localhost"
+const char IP1[] = "192.168.0.63"
+// const char IP2[] = "localhost"
 const char IP2[] = "192.168.0.63"
 
 component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEncoder parser,
@@ -144,6 +146,7 @@ net.TCPSocket, net.TCPServerSocket, data.StringUtil strUtil, io.Output out, data
 	}
 
 	void List:add(Data item) {
+		out.println("Adding in alternate")
 		Request request = new Request()
 		request.functionName = ADD
 		request.numParams = 1
@@ -232,6 +235,9 @@ net.TCPSocket, net.TCPServerSocket, data.StringUtil strUtil, io.Output out, data
 
 	// this is extremely hardcoded! ):
 	void AdaptEvents:active() {
+
+		out.println("Alternate config")  // !!!!
+
 		if (content != null) {
 			char state[] = parser.jsonFromArray(content, null)
 			char msg[] = new char[]("../distributor/RemoteList.o!", state, "\r\r\r\r")

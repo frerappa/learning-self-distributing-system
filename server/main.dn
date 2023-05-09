@@ -73,7 +73,7 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 
 				}
 				else {
-					handleRequest(client)
+					asynch::handleRequest(client)
 				}
 
 
