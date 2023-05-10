@@ -1,7 +1,7 @@
 
 component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
 	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
-	data.IntUtil iu, distributor.LearningDistributor, DataComm dc{
+	data.IntUtil iu, distributor.LearningDistributor{
 
 	// processing incoming requests and handing them over to Server
 	void handleRequest(TCPSocket client, bool shouldAutoScale, LearningDistributor distributor) {
