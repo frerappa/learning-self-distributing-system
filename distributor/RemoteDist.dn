@@ -5,7 +5,7 @@ data Int {
 }
 
 const char debugMSG[] = "[@RemoteDist]"
-const int DEFAULT_DIST_PORT = 3000 // changed from 8081
+const int DEFAULT_DIST_PORT = 8081 // changed from 8081
 const int DEFAULT_APP_PORT  = 2010
 
 component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocket,
@@ -25,6 +25,34 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			params[0] = new AppParam()
 			params[0].string = iu.intToString(portApp)
 			assembly.setMain(remoteP, params)
+
+			// String conf[] = assembly.getConfigs()
+
+			// for (int k = 0; k < configs.arrayLength; k++) {
+			// 	out.println("$(conf[i].string)")  // !!!!
+			// 	out.println("")  // !!!!
+			// }
+
+			
+			char conf[] = assembly.getConfig()
+				out.println(conf)  // !!!!
+				out.println("")  // !!!!
+
+			assembly.addComp(new String("../readn/data/adt/List.heap.o"))
+
+
+
+			// conf = assembly.getConfig()
+			// 	out.println(conf)  // !!!!
+			// 	out.println("")  // !!!!
+
+						String confs[] = assembly.getAllConfigs()
+
+			for (int k = 0; k < confs.arrayLength; k++) {
+				out.println("$(confs[k].string)")  // !!!!
+				out.println("")  // !!!!
+			}
+
 			assembly.removeComp(new String[](
 				new String("./data/adt/ListCPPropagate.o"),
 				new String("./data/adt/ListCPAlternate.o"),

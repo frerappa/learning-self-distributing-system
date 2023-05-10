@@ -11,7 +11,7 @@ dnc RemoteDist.dn
 dnc RemoteList.dn
 dnc ./monitoring -sp ../server -v
 dnc ./util  -v
-dnc ./proxy -v
+dnc ./proxy -sp ../readn -v
 
 
 cd ..
