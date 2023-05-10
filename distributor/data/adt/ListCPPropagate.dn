@@ -137,7 +137,8 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 	    IPAddr addr = null
 	    for (int i = 0; i < remoteListsIps.arrayLength; i++) {
 	      addr = remoteListsIps[i]
-	      asynch::connectAndSend(addr, content, true)
+	    //   asynch::connectAndSend(addr, content, true)
+	      connectAndSend(addr, content, true)
 	    }
 	}
 
@@ -156,7 +157,6 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 	}
 
 	void List:add(Data item) {
-		//out.println("Estamos aqui!")
 		out.println("Adding in propagate")  // !!!!
 		Request request = new Request()
 		request.functionName = ADD

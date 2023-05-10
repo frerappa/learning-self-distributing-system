@@ -6,6 +6,7 @@ cd ..
 @REM # Compule distributor
 cd distributor
 dnc . -sp ../server -v
+dnc Distributor.dn -sp ../server -v
 dnc learning/UCB.dn
 dnc RemoteDist.dn
 dnc RemoteList.dn

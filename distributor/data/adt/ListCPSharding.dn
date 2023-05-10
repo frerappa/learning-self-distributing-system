@@ -241,7 +241,7 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 
 	// this is extremely hardcoded! ):
 	void AdaptEvents:active() {
-		if (content != null) {
+        if (content != null) {
 			out.println("Content not null") // !!!!!
 			setupRemoteDistsIPs()
 			ShardState shardState[] = new ShardState[remoteDistsIps.arrayLength]
@@ -256,8 +256,6 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 			for (int i = 0; i < remoteDistsIps.arrayLength; i++) {
 				char state[] = parser.jsonFromArray(shardState[i].state, null)
 				char msg[] = new char[]("../distributor/RemoteList.o!", state, "\r\r\r\r")
-
-				out.println("Making request to $(remoteDistsIps[i].ip) : $(iu.intToString(remoteDistsIps[i].port))")
 				makeRequest(remoteDistsIps[i], msg, true)
 			}
 		}

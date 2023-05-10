@@ -1,12 +1,42 @@
 
 component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
 	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
-	data.IntUtil iu, distributor.LearningDistributor {
+	data.IntUtil iu, distributor.LearningDistributor, DataComm dc{
 
 	// processing incoming requests and handing them over to Server
-	void handleRequest(TCPSocket client) {
+	void handleRequest(TCPSocket client, bool shouldAutoScale, LearningDistributor distributor) {
 		HTTPMessage msg = httpUtil.readHTTPRequest(client)
-		server.process(msg)
+		
+		for (int i = 0; i < 10; i++) {
+			out.println("ADDINF $(iu.intToString(i))")
+			Metric z = new Metric(i)
+			dc.addValue(z)
+		}
+
+		if (shouldAutoScale) {
+			int chosenConfig = distributor.distributeByLearning()
+
+			DateTime dt1 = null
+			DateTime dt2 = null
+			dt1 = ic.getTime()
+
+
+			server.process(msg)
+			
+			dt2 = ic.getTime()
+			int responseTime = 10
+			if ((dt1 != null) && (dt2 != null)) {
+				responseTime = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2)) 
+			}
+
+			dec reward = 100 / responseTime // todo change
+
+			distributor.updateReward(chosenConfig, reward) 
+
+		}
+		else {
+			server.process(msg)
+		}
 	}
 
 	int App:main(AppParam params[]) {
@@ -44,39 +74,7 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 			TCPSocket client = new TCPSocket()
 			if (client.accept(host)) {
 				out.println("Request is being handle")
-
-				if (shouldAutoScale) {
-					int chosenConfig = distributor.distributeByLearning()
-
-
-					DateTime dt1 = null
-					DateTime dt2 = null
-					dt1 = ic.getTime()
-
-
-					handleRequest(client)
-
-
-					
-					dt2 = ic.getTime()
-					int responseTime = 10
-					if ((dt1 != null) && (dt2 != null)) {
-						responseTime = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2)) 
-					}
-
-					// out.println("RT: $(iu.intToString(responseTime)) ms")
-					// f.write("$(iu.intToString(responseTime))\n")
-
-					dec reward = 100 / responseTime // todo change
-
-					distributor.updateReward(chosenConfig, reward) 
-
-				}
-				else {
-					asynch::handleRequest(client)
-				}
-
-
+				asynch::handleRequest(client, shouldAutoScale, distributor)
 			}
 		}
 

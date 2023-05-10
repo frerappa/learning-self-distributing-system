@@ -5,7 +5,7 @@ data Int {
 }
 
 const char debugMSG[] = "[@RemoteDist]"
-const int DEFAULT_DIST_PORT = 3000 // changed from 8081
+const int DEFAULT_DIST_PORT = 8081 // changed from 8081
 const int DEFAULT_APP_PORT  = 2010
 
 component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocket,

@@ -7,10 +7,19 @@ if __name__ == "__main__":
     plt.plot(dataLocal)
 
     shard = np.loadtxt("shard.txt", dtype=float)
-    plt.plot(shard)
+    plt.plot(shard[shard < 10000])
 
-    ucb = np.loadtxt("ucb-remote.txt", dtype=float)
-    plt.plot(ucb)
+    propagate = np.loadtxt("propagate.txt", dtype=float)
+    plt.plot(propagate)
 
+    # ucb = np.loadtxt("ucb-remote.txt", dtype=float)
+    # plt.plot(ucb)
+
+
+    plt.title("Configuração readn-writen")
+    plt.legend(["Local", "Sharding", "Propagate"])
+    plt.xlabel("Número de requisições")
+    plt.ylabel("Tempo de resposta (ms)")
+    plt.grid()
     
     plt.show()
