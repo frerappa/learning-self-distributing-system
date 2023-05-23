@@ -1,0 +1,6 @@
+
+interface ManualDistributor {
+	ManualDistributor:ManualDistributor()
+	void ManualDistributor:run()
+}
+

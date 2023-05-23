@@ -1,10 +1,6 @@
 
 interface LearningDistributor {
-	LearningDistributor:LearningDistributor()
-
-	void LearningDistributor:setupLearning() 
-	int LearningDistributor:distributeByLearning()
-
-	void LearningDistributor:updateReward(int config, dec reward) 
+	LearningDistributor:LearningDistributor(bool shouldSaveToFile)
+	void LearningDistributor:run()
 }
 

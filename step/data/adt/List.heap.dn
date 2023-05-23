@@ -8,7 +8,7 @@ data Int {
 	int i
 }
 
-component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, time.Timer timer {
+component provides data.adt.List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, time.Timer timer {
 	
 	ListItem list
 	ListItem listEnd

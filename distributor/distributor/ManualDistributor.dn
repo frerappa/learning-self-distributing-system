@@ -1,0 +1,26 @@
+const char debugMSG[]	  = "[@ManualDistributor]"
+
+const char LOCAL[]      = "local"
+
+component provides distributor.ManualDistributor requires Distributor distributor, io.Output out, io.File, data.StringUtil strUtil, data.IntUtil iu, data.DecUtil du, io.Input in {
+
+	int currentConfigIndex = 0
+	String configs[] = null
+
+	bool write = false
+
+	ManualDistributor:ManualDistributor() {
+		distributor.start()
+		configs = distributor.getConfigs()
+	}
+
+	void ManualDistributor:run() {
+		char cmd[] = "start"
+		while (cmd != "exit") {
+			if (cmd != "start") { distributor.setConfig(cmd)	}
+			out.print("distributor> ")
+			cmd = in.readln()
+        }
+	}
+}
+

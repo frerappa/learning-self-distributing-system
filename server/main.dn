@@ -1,42 +1,14 @@
 
-component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
-	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
-	data.IntUtil iu, distributor.LearningDistributor{
+component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocket, 
+	http.HTTPUtil httpUtil, server.Server server {
 
 	// processing incoming requests and handing them over to Server
-	void handleRequest(TCPSocket client, bool shouldAutoScale, LearningDistributor distributor) {
+	void handleRequest(TCPSocket client) {
 		HTTPMessage msg = httpUtil.readHTTPRequest(client)
-
-		if (shouldAutoScale) {
-			int chosenConfig = distributor.distributeByLearning()
-
-			DateTime dt1 = null
-			DateTime dt2 = null
-			dt1 = ic.getTime()
-
-
-			server.process(msg)
-			
-			dt2 = ic.getTime()
-			int responseTime = 10
-			if ((dt1 != null) && (dt2 != null)) {
-				responseTime = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2)) 
-			}
-
-			dec reward = 100 / responseTime // todo change
-
-			distributor.updateReward(chosenConfig, reward) 
-
-		}
-		else {
-			server.process(msg)
-		}
+		server.process(msg)
 	}
 
 	int App:main(AppParam params[]) {
-		bool shouldAutoScale = params.arrayLength == 0 || (params.arrayLength == 1 && params[0].string != "manual")
-		bool shouldSaveToFile = params.arrayLength > 1 && params[1].string == "save"
-
 		// instantiating variables
 		TCPServerSocket host = new TCPServerSocket()
 		int server_port = 8080
@@ -49,30 +21,14 @@ component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPSe
 			return 1
 		}
 
-		// File f = new File("../data/out.txt", File.FILE_ACCESS_WRITE)
-
-
-		out.println("Server is up and running...")
-
-		LearningDistributor distributor = null
-
-		if (shouldAutoScale) {
-
-			distributor = new LearningDistributor()
-			distributor.setupLearning()
-		}
-
+		//out.println("Server is up and running...")
 
 		// handling incoming requests
 		while (true) {
 			TCPSocket client = new TCPSocket()
-			if (client.accept(host)) {
-				out.println("Request is being handle")
-				asynch::handleRequest(client, shouldAutoScale, distributor)
-			}
+			if (client.accept(host))
+				asynch::handleRequest(client)
 		}
-
-		// f.close()
 
 		return 0
 	}

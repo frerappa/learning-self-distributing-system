@@ -11,7 +11,7 @@ const char TEST[]		= "test"
 const char EXIT[]       = "exit"
 
 
-component provides App requires io.Output out, data.StringUtil strUtil, data.IntUtil iu, io.Input in, 
+component provides Distributor requires io.Output out, data.StringUtil strUtil, data.IntUtil iu, io.Input in, 
 	monitoring.Perception, data.json.JSONEncoder encoder, data.DecUtil du, time.Timer t {
 
 	String remoteConfigs[] 		= null
@@ -155,9 +155,6 @@ component provides App requires io.Output out, data.StringUtil strUtil, data.Int
 					localConfigs = new String[](localConfigs, configs[confPointer])
 				}
 			}
-
-			out.println("$(debugMSG) $(debugMSG) $(debugMSG) $(debugMSG) $(debugMSG) ")
-
 		}
 	}
 
@@ -172,30 +169,43 @@ component provides App requires io.Output out, data.StringUtil strUtil, data.Int
 		}
 	}
 
-	int App:main(AppParam params[]) {
+	void Distributor:start() {
 		perception = new Perception(true)
-
 		/* Loading target system and adding a monitoring proxy to it */
-		params = new AppParam[](new AppParam())
-		// TODO validate if this is really necessary !!!!!! 
-		params[0].string = "manual"
-		perception.setMain("../server/main.o", params)
+		perception.setMain("../server/main.o", null)
 		perception.addProxy("|../distributor/monitoring/proxies/ServerProxy.o|*(*:server.Server[0]:*)|")
-		
-        String configs[] = perception.getAllConfigs()
+		String configs[] = perception.getAllConfigs()
 		for (int i = 0; i < configs.arrayLength; i++) {
 			out.println("$(debugMSG) $(iu.intToString(i+1)): $(configs[i].string)")
 		}
 		loadDistributedProxies()
 		remoteLocalSeparation()
 		local()
-		/* command prompt */
-		char cmd[] = "start"
-		while (cmd != "exit") {
-			if (cmd != "start") { commandInterpret(cmd)	}
-			out.print("distributor> ")
-			cmd = in.readln()
+	}
+
+	String[] Distributor:getConfigs() {
+		// todo remove hardcoded dependency 
+		return new String[](new String(LOCAL),
+							new String(PROPAGATE),
+							new String(SHARDING),
+							new String(ALTERNATE))
+	}
+
+	void Distributor:setConfig(char config[]) {
+		commandInterpret(config)
+	}
+
+	PerceptionData Distributor:getPerceptionData() {
+		PerceptionData result = new PerceptionData(new Metric[], new Event[])
+		char dataString[] = perception.getPerceptionData()
+		if (dataString.arrayLength == 0) {
+			return result
 		}
-		return 0
+		PerceptionData pD[] = encoder.jsonToArray(dataString, typeof(PerceptionData[]), null)
+		for (int i = 0; i < pD.arrayLength; i++) {
+			result.metrics = new Metric[](result.metrics, pD[i].metrics)
+			result.events = new Event[](result.events, pD[i].events)
+		}
+		return result
 	}
 }

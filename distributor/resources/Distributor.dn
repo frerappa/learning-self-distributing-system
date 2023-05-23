@@ -1,0 +1,10 @@
+uses data.String
+uses monitoring.Perception
+
+interface Distributor {
+	void start()
+    String[] getConfigs()
+    void setConfig(char config[])
+	PerceptionData getPerceptionData()
+}
+

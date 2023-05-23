@@ -1,0 +1,24 @@
+
+component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
+	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
+	data.IntUtil iu, distributor.LearningDistributor, distributor.ManualDistributor {
+
+
+
+	int App:main(AppParam params[]) {
+		bool shouldAutoScale = params.arrayLength == 0 || (params.arrayLength > 0 && params[0].string != "manual")
+		bool shouldSaveToFile = params.arrayLength > 1 && params[1].string == "save"
+
+        if (shouldAutoScale) {
+            LearningDistributor d = new LearningDistributor(true)
+            d.run()
+        }
+        else {
+            ManualDistributor d = new ManualDistributor()
+            d.run()       
+        }
+
+        return 0
+    }
+
+}
