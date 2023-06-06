@@ -4,6 +4,7 @@ component provides learning.EpsilonGreedy requires util.Math math, util.Random r
     int numberOfTimesChosen[]
     dec sumOfRewards[]
 
+    // epsilon probability of acting randomly 
     EpsilonGreedy:EpsilonGreedy(dec eps, int n) {
         random.setSeed(1010)
         epsilon = eps

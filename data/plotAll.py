@@ -28,6 +28,15 @@ if __name__ == "__main__":
     plt.plot(ucb)
     legend.append("Learning - UCB")
 
+    eg01 = np.loadtxt("epsilon01.txt", dtype=float)
+    plt.plot(eg01)
+    legend.append("Epsilon Greedy (e = 0.1)")
+
+    eg05 = np.loadtxt("epsilon05.txt", dtype=float)
+    plt.plot(eg05)
+    legend.append("Epsilon Greedy (e = 0.5)")
+
+
 
     plt.title("Configuração readn-writen")
     plt.legend(legend)

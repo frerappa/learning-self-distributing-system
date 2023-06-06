@@ -26,20 +26,16 @@ Entre na pasta _client_ em um terminal e digite:
 dnc . -v
 ```
 
-### Para executar o servidor:
-
-Entre na pasta _server_ em um terminal e digite:
-
-```
-dana -sp  "../distributor;../<MODE>" main.o
-```
-
 ## Para executar o distribuidor (local e remote):
 
-Abra três terminais na pasta _distributor_. No primeiro execute:
+Abra três terminais na pasta _distributor_. Para utilizar a adaptação automática, no primeiro execute:
 
 ```
-dana -sp "../server;../readn" Distributor.o
+dana -sp "../server;../readn-writen" App.o
+```
+Caso deseje que a adaptação seja feita pela inserção de comandos no terminal, execute":
+```
+dana -sp "../server;../readn-writen" App.o manual
 ```
 
 Em um segundo terminal digite:

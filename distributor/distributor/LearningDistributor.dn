@@ -51,6 +51,7 @@ component provides distributor.LearningDistributor requires Distributor distribu
 
 	void LearningDistributor:run() {
 		learning = new UCB(configs.arrayLength)
+		// learning = new EpsilonGreedy(0.1, configs.arrayLength)
 		PerceptionData perception = null
 
 		while (1) {

@@ -187,8 +187,9 @@ component provides Distributor requires io.Output out, data.StringUtil strUtil, 
 		// todo remove hardcoded dependency 
 		return new String[](new String(LOCAL),
 							new String(PROPAGATE),
-							new String(SHARDING),
-							new String(ALTERNATE))
+							new String(ALTERNATE),
+							new String(SHARDING)
+							)
 	}
 
 	void Distributor:setConfig(char config[]) {
