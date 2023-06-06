@@ -50,7 +50,7 @@ component provides App requires io.Output out, io.File, net.http.HTTPRequest htt
 
         bool save = true
         File f = new File("../data/out.txt", File.FILE_ACCESS_WRITE)
-        File r = new File("readheavy.txt", File.FILE_ACCESS_READ)
+        File r = new File("writeheavy.txt", File.FILE_ACCESS_READ)
 
         ranNum.setSeed(34)
         DateTime dt1 = ic.getTime()
