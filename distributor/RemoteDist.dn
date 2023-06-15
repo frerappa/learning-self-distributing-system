@@ -18,7 +18,6 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 	bool running 			= false
 
 	void startRemoteProcess(char remoteP[], char state[]) {
-		out.println(">>>>>>>>>>>>>>>>>>>>>Start remote process<<<<<<<<<<<<<")  // !!!!
 		// load and start relocated component
 		if (!running) {
 			AppParam params[] = new AppParam[1]
@@ -26,32 +25,10 @@ component provides App requires io.Output out, net.TCPSocket, net.TCPServerSocke
 			params[0].string = iu.intToString(portApp)
 			assembly.setMain(remoteP, params)
 
-			// String conf[] = assembly.getConfigs()
-
-			// for (int k = 0; k < configs.arrayLength; k++) {
-			// 	out.println("$(conf[i].string)")  // !!!!
-			// 	out.println("")  // !!!!
-			// }
-
 			
 			char conf[] = assembly.getConfig()
-				out.println(conf)  // !!!!
-				out.println("")  // !!!!
 
 			assembly.addComp(new String("../readn/data/adt/List.heap.o"))
-
-
-
-			// conf = assembly.getConfig()
-			// 	out.println(conf)  // !!!!
-			// 	out.println("")  // !!!!
-
-						String confs[] = assembly.getAllConfigs()
-
-			for (int k = 0; k < confs.arrayLength; k++) {
-				out.println("$(confs[k].string)")  // !!!!
-				out.println("")  // !!!!
-			}
 
 			assembly.removeComp(new String[](
 				new String("./data/adt/ListCPPropagate.o"),
