@@ -1,4 +1,4 @@
-# Projeto Final de Graduação
+# Aplicação de algoritmos Multi-Armed Bandits para sistemas auto-distribuídos 
 
 ## Para compilar o projeto:
 
