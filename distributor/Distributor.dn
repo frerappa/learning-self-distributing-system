@@ -186,8 +186,8 @@ component provides Distributor requires io.Output out, data.StringUtil strUtil, 
 	String[] Distributor:getConfigs() {
 		// todo remove hardcoded dependency 
 		return new String[](new String(LOCAL),
-							new String(PROPAGATE),
-							new String(ALTERNATE),
+							// new String(PROPAGATE),
+							// new String(ALTERNATE),
 							new String(SHARDING)
 							)
 	}
