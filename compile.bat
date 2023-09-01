@@ -22,6 +22,7 @@ cd client
 dnc . -v
 cd ..
 
+@REM  Compile implementations
 cd readn
 dnc . -v
 cd ../readn-writen
@@ -32,5 +33,7 @@ cd ../constant
 dnc . -v
 cd ../step
 dnc . -v
-
 cd ..
+
+@REM  Compile utils
+dnc ./utils -v

@@ -22,14 +22,15 @@ dnc . -v
 cd ..
 
 cd readn
-dnc . -v
+dnc . -sp ../ -v
 cd ../readn-writen
-dnc . -v
+dnc . -sp ../ -v
 cd ../writen
-dnc . -v
+dnc . -sp ../ -v
 cd ../constant
 dnc . -v
 cd ../step
 dnc . -v
-
 cd ..
+
+dnc ./utils -v

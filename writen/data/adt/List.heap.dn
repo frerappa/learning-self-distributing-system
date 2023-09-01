@@ -2,7 +2,9 @@ data Node {
     int key
 }
 
-component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu {
+const int WRITE_FACTOR = 10
+
+component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, utils.MathUtils mu {
 
   Node heap[] = null
   int length = 0
@@ -27,16 +29,10 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
             length++
             // shift up the nodes until the heap  
             // property has been reestablished
-            int idx = length - 1
-            int parentIdx = (idx - 1) / 2
-            while (idx > 0 && heap[parentIdx].key < heap[idx].key) {
-                Node aux = heap[parentIdx]
-                heap[parentIdx] = heap[idx]
-                heap[idx] = aux
-
-                idx = parentIdx
-                parentIdx = (idx - 1) / 2
+            for (int i = 0; i < length; i++) {
+                mu.numberOfPrimesLessThan((i + 1) * WRITE_FACTOR)
             }
+
             char result[] = new char[]("[")
             for (int i = 0; i < length; i++) {
                 result = new char[](result, " ", iu.intToString(heap[i].key))
