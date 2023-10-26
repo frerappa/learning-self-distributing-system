@@ -1,0 +1,3 @@
+interface DistributedUCB extends UCB {
+    DistributedUCB(int n)   
+}

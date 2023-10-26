@@ -1,0 +1,22 @@
+component provides learning.DistributedUCB requires net.http.HTTPRequest http, data.IntUtil iu, data.DecUtil du {
+    const int PORT = 3500
+    const char SERVER[] = "localhost"
+    const char BASE_PATH[] = "/ucb1"
+    
+    DistributedUCB:DistributedUCB(opt int n) {
+        char payloadBody[] = iu.intToString(n)
+
+        HTTPResponse resp = http.post(new char[]("http://", SERVER, ":", PORT, BASE_PATH, "/init"), null, payloadBody)
+    }
+
+    int DistributedUCB:chooseCompositionIndex() {
+        HTTPResponse resp = http.get(new char[]("http://", SERVER, ":", PORT, BASE_PATH, "/composition"), null)
+        return iu.intFromString(resp.content)
+    }
+
+    void DistributedUCB:update(int action, dec reward) {
+        char payloadBody[] = new char[](iu.intToString(action), "|", du.decToString(reward))
+
+        HTTPResponse resp = http.post(new char[]("http://", SERVER, ":", PORT, BASE_PATH, "/reward"), null, payloadBody)
+    }
+}

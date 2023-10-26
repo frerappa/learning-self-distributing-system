@@ -5,3 +5,11 @@
 *.out
 *.iml
 .DS_Store
+
+data/
+
+.idea
+
+*.pkl
+
+__pycache__

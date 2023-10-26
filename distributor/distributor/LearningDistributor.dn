@@ -3,11 +3,11 @@ const char debugMSG[]	  = "[@LearningDistributor]"
 const char LOCAL[]      = "local"
 
 component provides distributor.LearningDistributor requires Distributor distributor, io.Output out, io.File, 
-	data.StringUtil strUtil, data.IntUtil iu, time.Timer t, data.DecUtil du, io.Input in, learning.UCB, learning.EpsilonGreedy {
+	data.StringUtil strUtil, data.IntUtil iu, time.Timer t, data.DecUtil du, io.Input in, learning.UCB, learning.EpsilonGreedy, learning.DistributedUCB {
 
 	int currentConfigIndex = 0
 	String configs[] = null
-	UCB learning = null
+	DistributedUCB learning = null
 	// EpsilonGreedy learning = null
 
 	bool write = false
@@ -50,7 +50,7 @@ component provides distributor.LearningDistributor requires Distributor distribu
 
 
 	void LearningDistributor:run() {
-		learning = new UCB(configs.arrayLength)
+		learning = new DistributedUCB(configs.arrayLength)
 		// learning = new EpsilonGreedy(0.1, configs.arrayLength)
 		PerceptionData perception = null
 
