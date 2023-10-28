@@ -8,6 +8,6 @@ app.register_blueprint(ucb1_routes)
 app.register_blueprint(epsilon_greedy_routes)
 
 if __name__ == '__main__':
-    app.run(port=3500)
+    app.run(port=3000)
 
 # http://localhost:3500/
