@@ -1,7 +1,7 @@
 from flask import Flask
 
-from clients.UCBClient import ucb1_routes
-from clients.EpsilonGreedyClient import epsilon_greedy_routes
+from clients.models.UCBClient import ucb1_routes
+from clients.models.EpsilonGreedyClient import epsilon_greedy_routes
 
 app = Flask(__name__)
 app.register_blueprint(ucb1_routes)
