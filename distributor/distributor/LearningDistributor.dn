@@ -3,12 +3,14 @@ const char debugMSG[]	  = "[@LearningDistributor]"
 const char LOCAL[]      = "local"
 
 component provides distributor.LearningDistributor requires Distributor distributor, io.Output out, io.File, 
-	data.StringUtil strUtil, data.IntUtil iu, time.Timer t, data.DecUtil du, io.Input in, learning.UCB, learning.EpsilonGreedy, learning.DistributedUCB {
+	data.StringUtil strUtil, data.IntUtil iu, time.Timer t, data.DecUtil du, io.Input in, learning.UCB, learning.EpsilonGreedy, learning.DistributedUCB,
+	net.TCPSocket, net.TCPServerSocket, http.HTTPUtil httpUtil, server.Server server,
+	net.http.HTTPRequest http {
 
 	int currentConfigIndex = 0
 	String configs[] = null
-	DistributedUCB learning = null
-	// EpsilonGreedy learning = null
+
+	int port = 3500
 
 	bool write = false
 
@@ -18,19 +20,13 @@ component provides distributor.LearningDistributor requires Distributor distribu
 		write = outputToFile
 	}
 
-	int distributeByLearning() {
-		int index = learning.chooseCompositionIndex()
-		if (currentConfigIndex != index) {
-			String chosenConfig = configs[index]
+	void changeConfiguration(int newConfigurationIndex) {
+		if (currentConfigIndex != newConfigurationIndex) {
+			String chosenConfig = configs[newConfigurationIndex]
 			out.println("ChosenConfig: $(chosenConfig.string)")
 			distributor.setConfig(chosenConfig.string)
 		}
-		currentConfigIndex = index
-		return index
-	}
-
-	void updateReward(int config, dec reward) {
-		learning.update(config, reward)
+		currentConfigIndex = newConfigurationIndex
 	}
 
 	dec averageResponseTime(Metric m) {
@@ -40,33 +36,66 @@ component provides distributor.LearningDistributor requires Distributor distribu
 		return value / counter 
 	}
 
-	dec calculateReward(dec responseTime) {
-		return 100.0 / responseTime
-	}
-
-	void observationLoop(int observationWindow) {
-		t.sleep(observationWindow)
+	void sendResponse(HTTPMessage httpMessage, char response[]) {
+		httpMessage.socket.send("HTTP/1.1 200 OK\r\n")
+		httpMessage.socket.send("Server: $(HTTPUtil.SERVER_NAME)\r\n")
+		httpMessage.socket.send("Content-Encoding: binary\r\n")
+		httpMessage.socket.send("Content-Length: $(iu.intToString(response.arrayLength))\r\n")
+		httpMessage.socket.send("Connection: close\r\n")
+		httpMessage.socket.send("Content-Type: $(httpMessage.mimeType)\r\n")
+		httpMessage.socket.send("\r\n")
+		httpMessage.socket.send(response)
 	}
 
 
 	void LearningDistributor:run() {
-		learning = new DistributedUCB(configs.arrayLength)
-		// learning = new EpsilonGreedy(0.1, configs.arrayLength)
+		TCPServerSocket host = new TCPServerSocket()
+	
+		// binding server socket
+		if (!host.bind(TCPServerSocket.ANY_ADDRESS, port)) {
+			out.println("Error: failed to bind master socket")
+			return
+		}
 		PerceptionData perception = null
 
 		while (1) {
-			observationLoop(7500)
-			perception = distributor.getPerceptionData()
-			for (int j = 0; j < perception.metrics.arrayLength; j++) {
-				if (perception.metrics[j].name == "response_time") {
 
-					dec responseTime = averageResponseTime(perception.metrics[j])
+			TCPSocket client = new TCPSocket()
+			if (client.accept(host)) {
+				out.println("ok")
 
-					dec reward = calculateReward(responseTime)
+				HTTPMessage message = httpUtil.readHTTPRequest(client)
 
-					updateReward(currentConfigIndex, reward)
+				// GET /ucb/init
+				if (strUtil.ifind(message.resource, "/ucb/init") != StringUtil.NOT_FOUND && (message.command == "GET")) {
+					sendResponse(message, iu.intToString(configs.arrayLength))
+				}
 
-					distributeByLearning()
+				// GET /ucb/perception-data
+				if (strUtil.ifind(message.resource, "/ucb/perception-data") != StringUtil.NOT_FOUND && (message.command == "GET")) {
+					perception = distributor.getPerceptionData()
+					bool hasMetric = false
+					for (int j = 0; j < perception.metrics.arrayLength; j++) {
+						if (perception.metrics[j].name == "response_time") {
+							hasMetric = true
+							dec responseTime = averageResponseTime(perception.metrics[j])
+							char response[] = new char[](
+								iu.intToString(configs.arrayLength), 
+								"|", 
+								du.decToString(responseTime))
+
+								sendResponse(message, response)
+						}
+					}	
+					if (!hasMetric) {
+						sendResponse(message, "NOT FOUND")
+					}
+				}
+
+				// POST /ucb/composition
+				if (strUtil.ifind(message.resource, "/ucb/composition") != StringUtil.NOT_FOUND && (message.command == "POST")) {
+					changeConfiguration(iu.intFromString(message.postData))
+					sendResponse(message, "OK")
 				}
 			}
 		}
