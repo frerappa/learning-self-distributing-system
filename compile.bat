@@ -1,3 +1,5 @@
+@REM  Compile utils
+dnc ./utils -v
 
 cd server
 dnc . -v -sp ../distributor
@@ -24,16 +26,14 @@ cd ..
 
 @REM  Compile implementations
 cd readn
-dnc . -v
+dnc . -sp ../ -v
 cd ../readn-writen
-dnc . -v
+dnc . -sp ../ -v
 cd ../writen
-dnc . -v
+dnc . -sp ../ -v
 cd ../constant
-dnc . -v
+dnc . -sp ../ -v
 cd ../step
-dnc . -v
+dnc . -sp ../ -v
 cd ..
 
-@REM  Compile utils
-dnc ./utils -v

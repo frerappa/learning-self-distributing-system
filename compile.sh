@@ -1,4 +1,5 @@
 #! /bin/bash
+dnc ./utils -v
 
 cd server
 dnc . -v -sp ../distributor
@@ -28,9 +29,7 @@ dnc . -sp ../ -v
 cd ../writen
 dnc . -sp ../ -v
 cd ../constant
-dnc . -v
+dnc . -sp ../ -v
 cd ../step
-dnc . -v
+dnc . -sp ../ -v
 cd ..
-
-dnc ./utils -v
