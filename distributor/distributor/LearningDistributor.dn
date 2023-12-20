@@ -80,7 +80,7 @@ component provides distributor.LearningDistributor requires Distributor distribu
 							hasMetric = true
 							dec responseTime = averageResponseTime(perception.metrics[j])
 							char response[] = new char[](
-								iu.intToString(configs.arrayLength), 
+								iu.intToString(currentConfigIndex), 
 								"|", 
 								du.decToString(responseTime))
 

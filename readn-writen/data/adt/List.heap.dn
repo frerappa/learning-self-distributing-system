@@ -5,7 +5,7 @@ data Node {
 const int READ_FACTOR = 5
 const int WRITE_FACTOR = 5
 
-component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, utils.MathUtils mu {
+component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, utils.MathUtils mu, time.Timer t  {
     Node heap[] = null
     int length = 0
     Mutex heapLock = new Mutex()
@@ -49,6 +49,10 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
     */
     void List:remove(Data item) {
         mutex(heapLock) {
+            if (length == 0) {
+             heap = new Node[]()
+            }
+
             Node itemToRemove = item
             int itemIdx = 0
             for (int i = 0; i < length; i++) {
@@ -59,7 +63,19 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
                 }
             }
             length--
-            heapify(heap, length, itemIdx)
+
+           for (int i = 0; i < length; i++) {
+                mu.numberOfPrimesLessThan((i + 1) * WRITE_FACTOR)
+            }
+
+
+            char result[] = new char[]("[")
+            for (int i = 0; i < length; i++) {
+                result = new char[](result, " ", iu.intToString(heap[i].key))
+            }
+            result = new char[](result, " ]")
+            out.println("$(result)")
+
         }
     }
 

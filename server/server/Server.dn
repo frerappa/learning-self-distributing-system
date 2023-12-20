@@ -3,7 +3,7 @@ data Int {
 }
 
 component provides server.Server requires io.Output out, data.adt.List:heap list,
-	http.HTTPUtil httpUtil, data.IntUtil iu {
+	http.HTTPUtil httpUtil, data.IntUtil iu, data.StringUtil strUtil {
 
 	void Server:process(HTTPMessage msg) {
 		if (msg.command == "GET") {
@@ -20,9 +20,17 @@ component provides server.Server requires io.Output out, data.adt.List:heap list
 				sendResponse(msg, result)
 			}
 		} else if (msg.command == "POST") {
-			Int num = new Int(iu.intFromString(msg.postData))
-			list.add(num)
-			sendResponse(msg, "OK")
+	
+			if (strUtil.ifind(msg.resource, "/add") != StringUtil.NOT_FOUND) {
+				Int num = new Int(iu.intFromString(msg.postData))
+				list.add(num)
+				sendResponse(msg, "OK")
+			}
+			else {
+				Int num = new Int(iu.intFromString(msg.postData))
+				list.remove(num)
+				sendResponse(msg, "OK")
+			}
 		}
 	}
 
