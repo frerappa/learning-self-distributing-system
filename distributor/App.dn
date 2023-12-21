@@ -1,6 +1,6 @@
 
 component provides App requires io.Output out, io.File, net.TCPSocket, net.TCPServerSocket, 
-	http.HTTPUtil httpUtil, server.Server server, time.DateUtil dateUtil, time.Calendar ic, 
+	http.HTTPUtil httpUtil, time.DateUtil dateUtil, time.Calendar ic, 
 	data.IntUtil iu, distributor.LearningDistributor, distributor.ManualDistributor {
 
 

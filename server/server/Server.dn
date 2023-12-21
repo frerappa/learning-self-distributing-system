@@ -7,18 +7,30 @@ component provides server.Server requires io.Output out, data.adt.List:heap list
 
 	void Server:process(HTTPMessage msg) {
 		if (msg.command == "GET") {
-			Data nums[] = list.getContents()
-			if (nums.arrayLength == 0) {
-				sendResponse(msg, "EMPTY")
-			} else {
-				char result[] = new char[]("[")
-				for (int i = 0; i < nums.arrayLength; i++) {
-					Int num = nums[i]
-					result = new char[](result, " ", iu.intToString(num.i))
+			if (strUtil.ifind(msg.resource, "/get") != StringUtil.NOT_FOUND) {
+				Data nums[] = list.getContents()
+				if (nums.arrayLength == 0) {
+					sendResponse(msg, "EMPTY")
+				} else {
+					char result[] = new char[]("[")
+					for (int i = 0; i < nums.arrayLength; i++) {
+						Int num = nums[i]
+						result = new char[](result, " ", iu.intToString(num.i))
+					}
+					result = new char[](result, " ]")
+					sendResponse(msg, result)
 				}
-				result = new char[](result, " ]")
-				sendResponse(msg, result)
 			}
+			else {
+				if (nums.arrayLength == 0) {
+					sendResponse(msg, "EMPTY")
+				} else {
+					Int num = list.getFirst(num)
+					sendResponse(msg, iu.intToString(num.i))
+				}
+			}
+			Data nums[] = list.getContents()
+
 		} else if (msg.command == "POST") {
 	
 			if (strUtil.ifind(msg.resource, "/add") != StringUtil.NOT_FOUND) {

@@ -4,7 +4,7 @@ const char LOCAL[]      = "local"
 
 component provides distributor.LearningDistributor requires Distributor distributor, io.Output out, io.File, 
 	data.StringUtil strUtil, data.IntUtil iu, time.Timer t, data.DecUtil du, io.Input in, learning.UCB, learning.EpsilonGreedy, learning.DistributedUCB,
-	net.TCPSocket, net.TCPServerSocket, http.HTTPUtil httpUtil, server.Server server,
+	net.TCPSocket, net.TCPServerSocket, http.HTTPUtil httpUtil,
 	net.http.HTTPRequest http {
 
 	int currentConfigIndex = 0
