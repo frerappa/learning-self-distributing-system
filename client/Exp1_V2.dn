@@ -60,10 +60,10 @@ component provides App requires io.Output out, io.File, net.http.HTTPRequest htt
             int num = ranNum.getInt(101) 
             addRequest(num, save, f)
         }
-        // for (int i = 0; i < 500; i++) {
-        //     int num = ranNum.getInt(101) 
-        //     getRequest(save, f)
-        // }
+        for (int i = 0; i < 4000; i++) {
+            int num = ranNum.getInt(101) 
+            getRequest(save, f)
+        }
         DateTime dt2 = ic.getTime()
         out.println("$(iu.intToString(dt2.hour)):$(iu.intToString(dt2.minute)):$(iu.intToString(dt2.second))")
 		return 0

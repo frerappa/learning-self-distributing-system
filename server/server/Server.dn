@@ -22,15 +22,9 @@ component provides server.Server requires io.Output out, data.adt.List:heap list
 				}
 			}
 			else {
-				if (nums.arrayLength == 0) {
-					sendResponse(msg, "EMPTY")
-				} else {
-					Int num = list.getFirst(num)
-					sendResponse(msg, iu.intToString(num.i))
-				}
+				Int val = list.getFirst()
+				sendResponse(msg, iu.intToString(val.i))
 			}
-			Data nums[] = list.getContents()
-
 		} else if (msg.command == "POST") {
 	
 			if (strUtil.ifind(msg.resource, "/add") != StringUtil.NOT_FOUND) {

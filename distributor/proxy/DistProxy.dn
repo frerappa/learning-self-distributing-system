@@ -70,7 +70,13 @@ component provides proxy.DistProxy requires io.Output out, data.IntUtil iu, net.
 		Response response = new Response()
 
 		response.status = 1
-		response.value = new char[](iu.intToString(list.getFirst()))
+		Int res = list.getFirst()
+		if (res == null) {
+			response.value = new char[]()
+		}
+		else {
+			response.value = new char[](iu.intToString(res.i))
+		}
 
 		return response
 	}

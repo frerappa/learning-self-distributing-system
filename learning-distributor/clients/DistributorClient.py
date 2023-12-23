@@ -25,7 +25,6 @@ class DistributorClient:
     def update_reward(self):
         if self.model_type == "UCB":
             response = requests.get(f"{DistributorClient.base_url}:{DistributorClient.base_port}/ucb/perception-data")
-            print(response.content)
             if (response.content.decode('utf-8') == "NOT FOUND"):
                 self.should_reconfigure = False
                 return

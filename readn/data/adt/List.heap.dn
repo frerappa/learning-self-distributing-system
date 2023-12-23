@@ -2,9 +2,9 @@ data Node {
 	int key
 }
 
-const int READ_FACTOR = 5
+const int READ_FACTOR = 2
 
-component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, utils.MathUtils mu {
+component provides List:heap(Destructor, AdaptEvents) requires io.Output out, data.IntUtil iu, utils.MathUtils mu, time.Timer t {
 	Node heap[] = null
 	int length = 0
 	Mutex heapLock = new Mutex()
@@ -24,12 +24,8 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
 			Node node = item
 			heap = new Node[](heap, node)
 			length++
-			char result[] = new char[]("[")
-			for (int i = 0; i < length; i++) {
-				result = new char[](result, " ", iu.intToString(heap[i].key))
-			}
-			result = new char[](result, " ]")
-			out.println("$(result)")
+			// t.sleep(4500)
+			printHeap()
 		}
 	}
 
@@ -58,11 +54,19 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
 	}
 
 	/*
-	 * Return the first node.
+	 * Return the first node and remove it from the list.
 	 */
 	Data List:getFirst() {
 		mutex(heapLock) {
+			if (heap == null || length == 0) { 
+				return null
+			}
+			for (int i = 0; i < length; i++) {
+				mu.numberOfPrimesLessThan((i + 1) * READ_FACTOR)
+			}
 			Data item = heap[0]
+			remove(heap[0])
+			printHeap()
 			return item
 		}
 	}
@@ -202,6 +206,15 @@ component provides List:heap(Destructor, AdaptEvents) requires io.Output out, da
 				add(items[i])
 			}
 		}
+	}
+
+	void printHeap() {
+		char result[] = new char[]("[")
+		for (int i = 0; i < length; i++) {
+			result = new char[](result, " ", iu.intToString(heap[i].key))
+		}
+		result = new char[](result, " ]")
+		out.println("$(result)")
 	}
 
 	/*

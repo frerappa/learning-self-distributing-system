@@ -31,6 +31,7 @@ data ShardState {
 /* Available list operations */
 const char ADD[]          = "add"
 const char REMOVE[]       = "remove"
+const char GET_FIRST[]    = "getFirst"
 const char GET_LENGTH[]   = "getLength"
 const char GET_CONTENTS[] = "getContents"
 const char CLEAR_LIST[]   = "clearList"
@@ -40,14 +41,17 @@ const char LOCALHOST[] = "localhost"
 // const char IP1[] = "localhost"
 const char IP1[] = "192.168.0.63"
 // const char IP2[] = "localhost"
-const char IP2[] = "192.168.0.63"
+const char IP2[] = "192.168.0.170"
 
 component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEncoder parser,
-	net.TCPSocket, data.StringUtil strUtil, io.Output out, data.IntUtil iu,
+	net.TCPSocket, data.StringUtil strUtil, io.Output out, data.IntUtil iu, util.Random ranNum,
 	hash.Multiplicative hash
 {
 	IPAddr remoteDistsIps[] = null
 	IPAddr remoteListsIps[] = null
+
+	int idx = 0
+
 
 	void setupRemoteDistsIPs() {
 		if (remoteDistsIps == null) {
@@ -165,9 +169,30 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 		// TODO
 	}
 
+	// Get and remove first element in either sublist
 	Data List:getFirst() {
-		// TODO
-		return null
+		// build request
+		Request request = new Request()
+		request.functionName = GET_FIRST
+		request.numParams = 1
+		char requestStr[] = parser.jsonFromData(request, null)
+		char content2[] = new char[](requestStr, "!", " ", "\r\r\r\r")
+		// get the replica IP based on the item hash
+		setupRemoteListsIPs()
+
+		Response response = null
+		int len = 10
+		while (response == null || response.value.arrayLength == 0) {
+			len = getLengthFromIp(idx)
+			IPAddr addr = remoteListsIps[idx]
+			// send to remote list
+			response = makeRequest(addr, content2, true)
+			idx = (idx + 1) % remoteListsIps.arrayLength
+
+		}
+		out.println(new char[](response.value, "---"))
+
+		return new Int(iu.intFromString(response.value))
 	}
 
 	Data List:getNext() {
@@ -190,19 +215,24 @@ component provides List:heap(Destructor, AdaptEvents) requires data.json.JSONEnc
 	}
 
 	int List:getLength() {
+		// get the length from each replica to return the full length
+		int totalContents = 0
+		for (int i = 0; i < remoteListsIps.arrayLength; i++) {
+			totalContents += getLengthFromIp(i)
+		}
+		return totalContents
+	}
+
+	int getLengthFromIp(int index) {
 		// build request
 		Request request = new Request()
 		request.functionName = GET_LENGTH
 		request.numParams = 0
 		char requestStr[] = parser.jsonFromData(request, null)
 		char content2[] = new char[](requestStr, "!", " ", "\r\r\r\r")
-		// get the length from each replica to return the full length
-		int totalContents = 0
-		for (int i = 0; i < remoteListsIps.arrayLength; i++) {
-			Response response = makeRequest(remoteListsIps[i], content2, true)
-			totalContents += iu.intFromString(response.value)
-		}
-		return totalContents
+		Response response = makeRequest(remoteListsIps[index], content2, true)
+		return iu.intFromString(response.value)
+
 	}
 
 	Data[] List:getContents(opt Type t) {
